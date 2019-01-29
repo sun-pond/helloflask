@@ -51,9 +51,9 @@ def hi():
 @app.route('/find',methods=["POST"])
 def find():
     if request.method=='POST':
-        pjID=request.form['pjID']
+        pjID=request.form['id']
         #return render_template('index.html',request.args)
-        return pjID
+        return json.dumps([1,2,3],ensure_ascii = False)
 
 @app.before_request
 def connDB():

@@ -7,10 +7,11 @@
     <title>Progressive Times - Online News</title>
     <link href="https://fonts.googleapis.com/css?family=Raleway|Merriweather" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href={{ url_for("static", filename="css/site.css") }}>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 
 <body>
-    
+
 
     <!-- header -->
     <div id="header">
@@ -29,18 +30,27 @@
     <!-- javaScript -->
     <script type="text/javascript" src={{ url_for("static", filename="js/main.js") }}></script>
     <script>
-        
-            var btn = document.getElementById('submit');
-            let formData = new FormData();
-            formData.append('id', document.getElementById('pjID').value);
-            btn.onclick = function () {
-                alert(document.getElementById('pjID').value)
-                fetch('http://localhost:5000/find', {
-                    method: "POST",
-                    body: formData
-                });
-            }
-       
+        var btn = document.getElementById('submit');
+        //let formData = new FormData();
+        //formData.append('id', document.getElementById('pjID').value);
+
+        url = 'http://127.0.0.1:5000/find'
+        btn.onclick = function(){
+        fetch(url, {
+                method: 'post',
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+                },
+                body: 'id=' + document.getElementById('pjID').value
+            })
+            //.then(json)
+            .then(function (data) {
+                alert('ok');
+                console.log('Request 成功 with JSON response' + data, data);
+            })
+            .catch(function (error) {
+                console.log('Request failed', error);
+            });}
     </script>
 </body>
 
