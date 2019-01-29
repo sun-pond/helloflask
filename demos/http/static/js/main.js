@@ -47,6 +47,6 @@ function buildWebPage(result) {
 
 // loadLatestNews();
 function foo() {
-  alert("test");
+  //alert("test");
 }
 foo();

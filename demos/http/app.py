@@ -48,6 +48,12 @@ def hi():
     #return redirect(url_for('hello'))
     return render_template('index.html')
 
+@app.route('/find',methods=["POST"])
+def find():
+    if request.method=='POST':
+        pjID=request.form['pjID']
+        #return render_template('index.html',request.args)
+        return pjID
 
 @app.before_request
 def connDB():
