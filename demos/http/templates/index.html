@@ -23,24 +23,24 @@
     <hr>
 
     <h1>输入项目ID</h1>
-    <input id="pjID" placeholder="input...">
+    <input id="pjID" placeholder="input..." value="100041">
     <button id="submit">search...</button>
 
     <!-- javaScript -->
     <script type="text/javascript" src={{ url_for("static", filename="js/main.js") }}></script>
     <script>
-        $(function () {
+        
             var btn = document.getElementById('submit');
             let formData = new FormData();
             formData.append('id', document.getElementById('pjID').value);
             btn.onclick = function () {
-                alert('clicked')
+                alert(document.getElementById('pjID').value)
                 fetch('http://localhost:5000/find', {
                     method: "POST",
                     body: formData
                 });
             }
-        })
+       
     </script>
 </body>
 
