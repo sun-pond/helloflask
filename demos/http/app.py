@@ -5,7 +5,10 @@
     :copyright: © 2018 Grey Li
     :license: MIT, see LICENSE for more details.
 """
+
+#from __future__ import unicode_literals
 import os
+os.environ['NLS_LANG'] = 'SIMPLIFIED CHINESE_CHINA.UTF8'
 try:
     from urlparse import urlparse, urljoin
 except ImportError:
@@ -13,14 +16,18 @@ except ImportError:
 
 from jinja2 import escape
 from jinja2.utils import generate_lorem_ipsum
-from flask import Flask, make_response, request, redirect, url_for, abort, session, jsonify
+from flask import Flask, make_response, request, redirect, url_for, abort, session, jsonify, json, render_template
+import cx_Oracle as cx
+import collections
+import time
 
 app = Flask(__name__)
 app.secret_key = os.getenv('SECRET_KEY', 'secret string')
 
 
+
 # get name value from query string and cookie
-@app.route('/')
+# @app.route('/')
 @app.route('/hello')
 def hello():
     name = request.args.get('name')
@@ -36,16 +43,43 @@ def hello():
 
 
 # redirect
-@app.route('/hi')
+@app.route('/')
 def hi():
-    return redirect(url_for('hello'))
+    #return redirect(url_for('hello'))
+    return render_template('index.html')
 
+
+@app.before_request
+def connDB():
+    # Log client's info
+    print('client IP '+request.remote_addr + ' at ' + time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time())))
+'''
+@app.teardown_request
+def closeDB():
+    #global conn, cursor
+    pass
+'''
 
 # use int URL converter
 @app.route('/goback/<int:year>')
 def go_back(year):
-    return 'Welcome to %d!' % (2018 - year)
-
+    #return 'Welcome to %d!' % (2018 - year)
+    #global conn, cursor
+    conn = cx.connect('dataquery/query0815@10.1.15.251/shjdb')
+    cursor = conn.cursor()
+    sql="select pj.name from xinhua.pm_project pj where pj.id=:pjID"
+    cursor.execute(sql, {"pjID": year})        
+    rows = cursor.fetchall()
+    objects_list = []
+    for row in rows:
+        d = collections.OrderedDict()
+        d['pjName'] = row[0]
+        print(row[0])            
+        objects_list.append(d)         
+    j = json.dumps(objects_list,ensure_ascii = False)
+    cursor.close()
+    conn.close()
+    return j
 
 # use any URL converter
 @app.route('/colors/<any(blue, white, red):color>')
